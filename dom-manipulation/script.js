@@ -2,7 +2,7 @@
 // Dynamic Quote Generator with Server Sync + Conflict Resolution
 // ==============================
 
-// Simulated server URL (replace with real API if needed)
+// Simulated server URL (can be replaced with a real API)
 const SERVER_URL = "https://jsonplaceholder.typicode.com/posts";
 
 // Local quotes array
@@ -118,12 +118,7 @@ function addQuote() {
 
   if (!text || !category) return alert("Both fields required.");
 
-  const newQuote = {
-    id: Date.now(),
-    text,
-    category
-  };
-
+  const newQuote = { id: Date.now(), text, category };
   quotes.push(newQuote);
   saveQuotes();
   populateCategories();
@@ -134,20 +129,15 @@ function addQuote() {
 // ==============================
 // Server Sync Simulation
 // ==============================
-
-// REQUIRED by project: this function name must exist
 async function fetchQuotesFromServer() {
   try {
     const res = await fetch(SERVER_URL);
     const data = await res.json();
-
-    // Simulate server sending quote-like data
     const serverQuotes = data.slice(0, 5).map((item, i) => ({
       id: i + 1000,
       text: item.title,
       category: "Server"
     }));
-
     return serverQuotes;
   } catch (err) {
     showSyncMessage("❌ Error fetching from server", "error");
@@ -168,13 +158,14 @@ async function pushQuotesToServer(localQuotes) {
   }
 }
 
-async function syncWithServer() {
+// ✅ REQUIRED FUNCTION NAME
+async function syncQuotes() {
   showSyncMessage("🔄 Syncing with server...");
 
   const serverQuotes = await fetchQuotesFromServer();
   if (serverQuotes.length === 0) return;
 
-  // Simple conflict resolution: server always wins
+  // Simple conflict resolution: server wins
   const merged = [...quotes];
   let conflicts = 0;
 
@@ -197,7 +188,7 @@ async function syncWithServer() {
   filterQuotes();
 
   if (conflicts > 0) {
-    showSyncMessage(`⚠️ Conflicts resolved (${conflicts} server updates applied)`, "conflict");
+    showSyncMessage(`⚠️ Conflicts resolved (${conflicts} updates applied)`, "conflict");
   } else {
     showSyncMessage("✅ Synced with server successfully", "ok");
   }
@@ -237,16 +228,16 @@ function importFromJsonFile(event) {
 }
 
 // ==============================
-// Initialize
+// Initialize App
 // ==============================
 loadQuotes();
 populateCategories();
 filterQuotes();
 createAddQuoteForm();
 
-manualSyncBtn.addEventListener("click", syncWithServer);
+manualSyncBtn.addEventListener("click", syncQuotes);
 newQuoteBtn.addEventListener("click", showRandomQuote);
 exportBtn.addEventListener("click", exportQuotesToJson);
 
-// Periodic sync every 60 seconds
-setInterval(syncWithServer, 60000);
+// Periodic automatic sync every 60 seconds
+setInterval(syncQuotes, 60000);
