@@ -2,7 +2,7 @@
 // Dynamic Quote Generator with Server Sync + Conflict Resolution
 // ==============================
 
-// Simulated server URL (can be replaced with a real API)
+// Simulated server URL
 const SERVER_URL = "https://jsonplaceholder.typicode.com/posts";
 
 // Local quotes array
@@ -152,7 +152,9 @@ async function pushQuotesToServer(localQuotes) {
       body: JSON.stringify(localQuotes),
       headers: { "Content-Type": "application/json" }
     });
-    showSyncMessage("✅ Synced with server successfully", "ok");
+    // Keep this message simple for testing/logging
+    console.log("Quotes synced with server!");
+    showSyncMessage("Quotes synced with server!", "ok");
   } catch {
     showSyncMessage("❌ Failed to push data to server", "error");
   }
@@ -165,17 +167,17 @@ async function syncQuotes() {
   const serverQuotes = await fetchQuotesFromServer();
   if (serverQuotes.length === 0) return;
 
-  // Simple conflict resolution: server wins
   const merged = [...quotes];
   let conflicts = 0;
 
+  // Conflict resolution: server wins
   serverQuotes.forEach(sq => {
     const existing = merged.find(lq => lq.id === sq.id);
     if (existing) {
       if (existing.text !== sq.text) {
         conflicts++;
         const index = merged.indexOf(existing);
-        merged[index] = sq; // server wins
+        merged[index] = sq;
       }
     } else {
       merged.push(sq);
@@ -190,7 +192,9 @@ async function syncQuotes() {
   if (conflicts > 0) {
     showSyncMessage(`⚠️ Conflicts resolved (${conflicts} updates applied)`, "conflict");
   } else {
-    showSyncMessage("✅ Synced with server successfully", "ok");
+    // Display required phrase here too
+    showSyncMessage("Quotes synced with server!", "ok");
+    console.log("Quotes synced with server!");
   }
 
   await pushQuotesToServer(quotes);
@@ -239,5 +243,5 @@ manualSyncBtn.addEventListener("click", syncQuotes);
 newQuoteBtn.addEventListener("click", showRandomQuote);
 exportBtn.addEventListener("click", exportQuotesToJson);
 
-// Periodic automatic sync every 60 seconds
+// Auto-sync every 60 seconds
 setInterval(syncQuotes, 60000);
