@@ -2,7 +2,7 @@
 // Dynamic Quote Generator with Server Sync + Conflict Resolution
 // ==============================
 
-// Simulated server URL (you can replace with real API)
+// Simulated server URL (replace with real API if needed)
 const SERVER_URL = "https://jsonplaceholder.typicode.com/posts";
 
 // Local quotes array
@@ -44,8 +44,7 @@ const newQuoteBtn = document.getElementById("newQuote");
 // ==============================
 function showSyncMessage(message, type = "ok") {
   syncStatus.textContent = message;
-
-  syncStatus.className = ""; // Reset
+  syncStatus.className = "";
   if (type === "ok") syncStatus.classList.add("sync-ok");
   if (type === "conflict") syncStatus.classList.add("sync-conflict");
   if (type === "error") syncStatus.classList.add("sync-error");
@@ -136,13 +135,13 @@ function addQuote() {
 // Server Sync Simulation
 // ==============================
 
-// Fetch quotes from the "server"
-async function fetchServerQuotes() {
+// REQUIRED by project: this function name must exist
+async function fetchQuotesFromServer() {
   try {
     const res = await fetch(SERVER_URL);
     const data = await res.json();
 
-    // Simulate that server sends quote-like data
+    // Simulate server sending quote-like data
     const serverQuotes = data.slice(0, 5).map((item, i) => ({
       id: i + 1000,
       text: item.title,
@@ -156,7 +155,6 @@ async function fetchServerQuotes() {
   }
 }
 
-// Push local quotes to server (simulation)
 async function pushQuotesToServer(localQuotes) {
   try {
     await fetch(SERVER_URL, {
@@ -170,11 +168,10 @@ async function pushQuotesToServer(localQuotes) {
   }
 }
 
-// Sync and resolve conflicts
 async function syncWithServer() {
   showSyncMessage("🔄 Syncing with server...");
 
-  const serverQuotes = await fetchServerQuotes();
+  const serverQuotes = await fetchQuotesFromServer();
   if (serverQuotes.length === 0) return;
 
   // Simple conflict resolution: server always wins
@@ -247,10 +244,9 @@ populateCategories();
 filterQuotes();
 createAddQuoteForm();
 
-// Manual sync
 manualSyncBtn.addEventListener("click", syncWithServer);
 newQuoteBtn.addEventListener("click", showRandomQuote);
 exportBtn.addEventListener("click", exportQuotesToJson);
 
-// Periodic sync every 60s
+// Periodic sync every 60 seconds
 setInterval(syncWithServer, 60000);
