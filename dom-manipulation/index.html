@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dynamic Quote Generator with Filtering</title>
+  <title>Dynamic Quote Generator with Server Sync</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -18,15 +18,26 @@
       width: 60%;
       background-color: #f9f9f9;
     }
-    .category {
-      font-weight: bold;
-      color: #0077cc;
+    #syncStatus {
+      margin: 10px auto;
+      padding: 10px;
+      width: 60%;
+      border-radius: 5px;
+      color: white;
     }
-    select, input, button {
-      padding: 8px 12px;
-      margin: 5px;
+    .sync-ok {
+      background-color: #28a745;
+    }
+    .sync-conflict {
+      background-color: #ffc107;
+      color: black;
+    }
+    .sync-error {
+      background-color: #dc3545;
     }
     button {
+      padding: 8px 15px;
+      margin: 5px;
       background-color: #0077cc;
       color: white;
       border: none;
@@ -41,17 +52,18 @@
 <body>
   <h1>Dynamic Quote Generator</h1>
 
-  <!-- Filter Dropdown -->
+  <div id="syncStatus" class="sync-ok">✅ Synced with Server</div>
+
   <div>
     <label for="categoryFilter">Filter by Category:</label>
     <select id="categoryFilter" onchange="filterQuotes()">
       <option value="all">All Categories</option>
-      <!-- Dynamically populated categories -->
     </select>
   </div>
 
   <div id="quoteDisplay"></div>
   <button id="newQuote">Show Random Quote</button>
+  <button id="manualSync">🔄 Sync Now</button>
 
   <div style="margin-top: 20px;">
     <button id="exportQuotes">Export Quotes (JSON)</button>
