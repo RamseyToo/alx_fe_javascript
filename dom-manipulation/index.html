@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dynamic Quote Generator with Storage</title>
+  <title>Dynamic Quote Generator with Filtering</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -23,9 +22,11 @@
       font-weight: bold;
       color: #0077cc;
     }
-    button {
-      padding: 8px 15px;
+    select, input, button {
+      padding: 8px 12px;
       margin: 5px;
+    }
+    button {
       background-color: #0077cc;
       color: white;
       border: none;
@@ -40,8 +41,17 @@
 <body>
   <h1>Dynamic Quote Generator</h1>
 
+  <!-- Filter Dropdown -->
+  <div>
+    <label for="categoryFilter">Filter by Category:</label>
+    <select id="categoryFilter" onchange="filterQuotes()">
+      <option value="all">All Categories</option>
+      <!-- Dynamically populated categories -->
+    </select>
+  </div>
+
   <div id="quoteDisplay"></div>
-  <button id="newQuote">Show New Quote</button>
+  <button id="newQuote">Show Random Quote</button>
 
   <div style="margin-top: 20px;">
     <button id="exportQuotes">Export Quotes (JSON)</button>
